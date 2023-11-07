@@ -93,7 +93,6 @@ fun SearchFlight(
             },
             value = searchText,
             onValueChange = {
-                //isClicked = false
                 homeViewModel.updateIsClicked(false)
                 searchText = it
                 homeViewModel.saveLastUserSearchWord(it)
@@ -103,7 +102,7 @@ fun SearchFlight(
                 .padding(top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        Text(text = "${lastUserSearchWordUiState.lastUserSearchWord}")
+        Text(text = lastUserSearchWordUiState.lastUserSearchWord)
             Box {
                 if(!homeUiState.isClicked) {
                     AutoComplete(searchUiState = searchUiState, homeViewModel = homeViewModel)
