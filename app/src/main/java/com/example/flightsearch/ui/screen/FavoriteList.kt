@@ -48,7 +48,7 @@ fun FavoriteList(
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(18.dp),
+        contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
         modifier = Modifier
             .animateContentSize()
     ) {

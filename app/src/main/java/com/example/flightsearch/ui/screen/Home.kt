@@ -1,6 +1,7 @@
 package com.example.flightsearch.ui.screen
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,9 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,12 +31,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.flightsearch.ui.FlightSearchViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.flightsearch.R
 import com.example.flightsearch.data.FlightData
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FlightSearchTopAppBar() {
+    TopAppBar(
+        title = {
+            Text(text = stringResource(id = R.string.app_name),
+                color = MaterialTheme.colorScheme.secondary)
+        },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(MaterialTheme.colorScheme.secondaryContainer)
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
     modifier: Modifier = Modifier,
@@ -36,8 +60,17 @@ fun Home(
 ) {
     // To wake up database(ROOM)
     val testData by viewModel.getTestData().collectAsState(null)
-    Column {
-        SearchFlight(viewModel = viewModel)
+
+    Scaffold(
+        topBar = { FlightSearchTopAppBar() }
+    ) {
+        Column(
+            modifier = modifier.padding(it)
+        ) {
+            SearchFlight(
+                viewModel = viewModel
+            )
+        }
     }
 }
 
@@ -97,12 +130,14 @@ fun SearchFlight(
                 searchText = it
                 homeViewModel.saveLastUserSearchWord(it)
             },
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "search")
+            },
             shape = RoundedCornerShape(50),
             modifier = modifier
                 .padding(top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        Text(text = lastUserSearchWordUiState.lastUserSearchWord)
             Box {
                 if(!homeUiState.isClicked) {
                     AutoComplete(searchUiState = searchUiState, homeViewModel = homeViewModel)
@@ -134,7 +169,7 @@ fun AutoComplete(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .animateContentSize()
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
     ) {
         items(searchUiState.size) {
             Row(
@@ -164,13 +199,9 @@ fun FlightList(
     homeViewModel: HomeViewModel,
     flightCardViewModel: FlightCardViewModel
 ) {
-    Column {
-        Text(text = userChoiceData?.name ?: "test")
-        Text(text = "${searchResultUiState.size}")
-    }
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal =  16.dp)
+        contentPadding = PaddingValues(16.dp)
     ) {
         items(searchResultUiState.size) {
             Column {
